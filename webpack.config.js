@@ -1,0 +1,61 @@
+const path = require("path");
+const CopyPlugin = require("copy-webpack-plugin");
+
+module.exports = {
+  mode: "development",
+  entry: "./src/index.ts",
+  watch: true,
+  watchOptions: {
+    aggregateTimeout: 200,
+    poll: 1000
+  },
+  output: {
+    filename: "index.js",
+    path: path.resolve(__dirname, "dist")
+  },
+  resolve: {
+    extensions: [".tsx", ".ts", ".js", ".json"]
+  },
+  devServer: {
+      host: 'localhost',//your ip address
+      port: 8080,
+      disableHostCheck: true,
+  },
+  devtool: "inline-source-map",
+  plugins: [
+    new CopyPlugin([
+      {
+        from: "src/*.html",
+        to: "",
+        flatten: true
+      }
+    ])
+  ],
+  module: {
+    rules: [
+      // all files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'
+      {
+        test: /\.tsx?$/,
+        use: ["ts-loader"],
+        exclude: /node_modules/
+      },
+      {
+        test: /\.s[ac]ss$/i,
+        use: [
+          // Creates `style` nodes from JS strings
+          {
+            loader: "style-loader"
+            // options: {
+            //   // injectType: "singletonStyleTag"
+            //   // injectType: "linkTag"
+            // }
+          },
+          // Translates CSS into CommonJS
+          "css-loader",
+          // Compiles Sass to CSS
+          "sass-loader"
+        ]
+      }
+    ]
+  }
+};
